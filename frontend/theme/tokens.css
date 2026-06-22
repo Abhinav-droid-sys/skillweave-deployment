@@ -1,0 +1,58 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --bg: #F4F5F7;
+    --bg-subtle: #FAFAFB;
+    --surface: #FFFFFF;
+    --border: #E5E7EB;
+    --border-strong: #D8DBE2;
+
+    --text: #0F172A;
+    --text-secondary: #475569;
+    --text-muted: #94A3B8;
+
+    --primary: #4F46E5;
+    --primary-soft: #6366F1;
+    --accent: #7C3AED;
+    --accent-soft: #8B5CF6;
+
+    --success: #22C55E;
+    --danger: #EF4444;
+    --focus-ring: rgba(99,102,241,0.45);
+  }
+
+  /* Optional Dark Mode - not strictly specified in prompt, but good to have fallback */
+  [data-theme="dark"] {
+    --bg: #0F172A;
+    --bg-subtle: #1E293B;
+    --surface: #0B1120;
+    --border: #334155;
+    --border-strong: #475569;
+
+    --text: #F8FAFC;
+    --text-secondary: #CBD5E1;
+    --text-muted: #64748B;
+
+    --primary: #818CF8;
+    --primary-soft: #6366F1;
+    --accent: #A78BFA;
+    --accent-soft: #8B5CF6;
+  }
+
+  body {
+    @apply bg-bg text-text-secondary font-sans antialiased;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply text-text font-bold;
+  }
+}
+
+@layer utilities {
+  .text-gradient {
+    @apply bg-clip-text text-transparent bg-signature-gradient;
+  }
+}

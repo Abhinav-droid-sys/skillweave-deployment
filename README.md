@@ -1,0 +1,127 @@
+# SkillWeave — AI Occupation Intelligence
+
+SkillWeave is an advanced, AI-powered semantic search and classification engine designed to seamlessly map messy, real-world, and multilingual job titles to standard **NCO 2015 (National Classification of Occupations)** codes. 
+
+By leveraging cutting-edge Vector Databases, fully local LLM-based reranking (Gemma via Ollama), and multilingual translation models, SkillWeave transforms how occupational data is standardized across India and beyond, entirely on your own hardware without relying on closed-source APIs.
+
+---
+
+##  Core Functionality
+
+### 1. Multilingual Semantic Search
+- **Language Agnostic**: Search using natural language in English, Hindi, Bengali, Tamil, and more. 
+- **Auto-Response Matching**: The backend automatically detects your input language and dynamically translates the resulting standard occupation titles back into your native language.
+- **Global UI Translation**: A built-in Google Translate module in the Navbar allows the entire dashboard UI to be instantly translated into any language.
+
+### 2. High-Speed Batch Processing
+- **CSV Uploads**: Upload massive datasets of unstandardized occupational strings.
+- **Optimized Concurrency**: Processes batches at blazing speeds using chunk-based dispatching on the frontend and highly optimized `ThreadPoolExecutor` parallelization on the FastAPI backend.
+
+### 3. Fully Local LLM Intelligence & Reranking (Gemma via Ollama)
+- **Data Privacy**: Runs 100% locally on your machine using Ollama. No data is sent to external APIs like OpenAI or Groq.
+- **Query Normalization**: Cleans up typos, slang, and phonetic Hinglish (e.g., "kheti karne wala" → "farmer") before searching.
+- **Smart Reranking**: Uses local Gemma models to analyze the top vector search results and re-order them based on deep contextual understanding, providing human-level accuracy.
+
+### 4. Interactive Analytics Dashboard
+- **Real-Time Metrics**: Visualizes system performance, search accuracy, and LLM vs. Baseline comparisons using beautiful Recharts.
+- **Language Radar**: Tracks the distribution of languages being processed.
+- **Latency Tracking**: Monitors API performance to ensure sub-second response times.
+
+---
+
+## 🛠 Technology Stack
+
+**Frontend:**
+- Next.js 14 (App Router)
+- React & TypeScript
+- Tailwind CSS (Custom themes & Glassmorphism UI)
+- Zustand (State Management)
+- Recharts (Data Visualization)
+
+**Backend:**
+- Python & FastAPI
+- Qdrant (Vector Database)
+- FastEmbed (Local sentence-transformers)
+- Ollama (Local LLM runner for Gemma)
+- Deep-Translator (Multilingual support)
+
+---
+
+##  Full Installation Guide
+
+### Prerequisites
+- **Node.js** (v18 or higher)
+- **Python** (v3.10 or higher)
+- **Git**
+- **Ollama**: Download and install from [ollama.com](https://ollama.com)
+
+### 1. Clone the Repository
+```bash
+git clone https://github.com/Rishita0573/skillweave-final-project.git
+cd skillweave-final-project
+```
+
+### 2. Setup Local LLM (Ollama)
+SkillWeave uses the Gemma model for high-accuracy semantic normalization and reranking. Once Ollama is installed, run the following in your terminal to download and start the model:
+
+```bash
+ollama run gemma2
+```
+*Leave the Ollama server running in the background. It will automatically bind to `http://localhost:11434`.*
+
+### 3. Backend Setup
+The backend runs on FastAPI and requires Python dependencies.
+
+```bash
+cd backend
+
+# Create a virtual environment
+python -m venv venv
+
+# Activate the virtual environment
+# On Windows:
+venv\Scripts\activate
+# On macOS/Linux:
+source venv/bin/activate
+
+# Install dependencies
+pip install -r requirements.txt
+```
+
+**Environment Variables:**
+Create a `.env` file in the `backend` directory. The defaults are already configured for Ollama, but you can explicitly specify the model:
+```env
+LLM_BASE_URL="http://localhost:11434/v1"
+LLM_API_KEY="ollama"
+LLM_MODEL="gemma2"
+```
+
+**Start the Backend Server:**
+```bash
+uvicorn app.main:app --host 127.0.0.1 --port 8000 --reload
+```
+*The backend API will now be running at `http://127.0.0.1:8000`*
+
+### 4. Frontend Setup
+The frontend is built with Next.js. Open a **new terminal window** and navigate to the frontend directory.
+
+```bash
+cd frontend
+
+# Install dependencies
+npm install
+
+# Start the development server
+npm run dev
+```
+*The frontend will now be running at `http://localhost:3000`*
+
+---
+
+## 💻 Usage Instructions
+
+1. **Access the App**: Open your browser and navigate to `http://localhost:3000`.
+2. **Search Manually**: Use the main dashboard to test single queries in any language.
+3. **Batch Process**: Navigate to the "Batch Coding" tab, upload a CSV containing a column of occupation texts, and watch the system classify them concurrently.
+4. **View Metrics**: Click the "Metrics" tab in the navigation bar to see real-time performance analytics, language distribution, and Gemma model impact charts.
+5. **Change UI Language**: Use the dropdown widget in the top-right navigation bar to translate the entire application interface into your preferred language.

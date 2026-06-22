@@ -1,0 +1,27 @@
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# Node / Frontend
+frontend/node_modules/
+frontend/.next/
+frontend/.env.local
+frontend/.env.*.local
+
+# Python / Backend
+backend/venv/
+backend/.env
+backend/__pycache__/
+backend/*.py[cod]
+backend/*$py.class
+
+
+# Models & Large Data
+backend/model/
+backend/app/gemma-4-E4B-it-GGUF/
+
+# OS/IDE
+.vscode/
+.DS_Store
+Thumbs.db
