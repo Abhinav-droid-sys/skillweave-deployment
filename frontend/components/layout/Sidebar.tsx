@@ -25,7 +25,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
       {/* Overlay — visible on all screens when sidebar is open */}
       {isOpen && (
         <div
-          className="fixed inset-0 bg-black/30 z-40 md:hidden"
+          className="fixed inset-0 bg-black/30 z-40"
           onClick={onClose}
         />
       )}
@@ -39,8 +39,8 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
           ${isOpen ? "translate-x-0" : "-translate-x-full"}
         `}
       >
-        {/* Close button inside sidebar — only shown on mobile */}
-        <div className="flex items-center justify-between p-4 pb-0 md:hidden">
+        {/* Close button inside sidebar */}
+        <div className="flex items-center justify-between p-4 pb-0">
           <h3 className="text-[0.72rem] font-semibold uppercase tracking-[0.09em] text-text-muted">
             Recent Searches
           </h3>
@@ -50,10 +50,6 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
         </div>
 
         <div className="p-4 flex-1 flex flex-col overflow-hidden">
-          {/* Desktop heading (hidden on mobile since we put it in the row above) */}
-          <h3 className="hidden md:block text-[0.72rem] font-semibold uppercase tracking-[0.09em] text-text-muted mb-4">
-            Recent Searches
-          </h3>
 
           {history.length === 0 ? (
             <div className="flex-1 flex flex-col items-center justify-center text-center px-4 opacity-80">

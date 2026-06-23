@@ -55,128 +55,127 @@ export default function ResultCard({
     }
   }
 
+  // Extract hierarchy for the Division/Group/Sub-group display
+  const hierarchyNodes = result.hierarchy_path ? result.hierarchy_path.split(" > ") : [];
+  const division = hierarchyNodes[0] || result.division_code || "N/A";
+  const group = hierarchyNodes[1] || "N/A";
+  const subGroup = hierarchyNodes[2] || "N/A";
+
+  const handleCopy = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    navigator.clipboard.writeText(result.nco_code);
+  };
+
   return (
-    <Card 
-      className={`p-5 sm:p-6 transition-all duration-300 ${
-        isTopMatch ? "border-primary/40 shadow-lg scale-[1.01] relative z-10" : "hover:shadow-md hover:-translate-y-px hover:border-border-strong"
+    <div 
+      className={`bg-bg-subtle border-l-2 border-primary rounded-sm p-5 sm:p-6 transition-all duration-300 flex flex-col gap-4 ${
+        isTopMatch ? "shadow-sm relative z-10" : ""
       }`}
     >
-      {/* Subtle glow for top match */}
-      {isTopMatch && (
-        <div className="absolute inset-0 rounded-[inherit] pointer-events-none opacity-20" style={{
-          background: "linear-gradient(135deg, var(--primary) 0%, transparent 50%, var(--accent) 100%)",
-          maskImage: "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)",
-          WebkitMaskComposite: "xor",
-          padding: "1px"
-        }} />
-      )}
-
-      {/* Ranking badge */}
-      {rank in RANK_LABELS && (
-        <div className={`inline-flex items-center text-[10px] font-mono font-bold tracking-widest uppercase px-2.5 py-1 rounded-pill border mb-3 ${RANK_LABELS[rank].className}`}>
-          {RANK_LABELS[rank].text}
+      {/* Top Row: Code and Copy Button */}
+      <div className="flex items-start justify-between w-full">
+        <div className="text-xl font-bold text-primary tracking-tight font-serif">
+          {result.nco_code}
         </div>
-      )}
-
-      <div className="flex items-start gap-4">
-        {/* Code Chip */}
-        <div className="shrink-0">
-          <span className="font-mono text-sm font-bold text-primary bg-primary-soft/10 px-2.5 py-1.5 rounded-md inline-block">
-            {result.nco_code}
-          </span>
-        </div>
-
-        {/* Title & Summary */}
-        <div className="flex-1 min-w-0">
-          <h3 className="text-lg font-semibold text-text leading-tight mb-1">
-            {result.display_title || result.title}
-          </h3>
-          {result.summary && (
-            <p className="text-[13.5px] text-text-muted leading-relaxed">
-              {result.summary}
-            </p>
-          )}
-        </div>
-
-        {/* Confidence Ring */}
-        <ConfidenceRing value={result.confidence} />
+        <button
+          onClick={handleCopy}
+          className="px-4 py-1.5 bg-surface border border-border text-[12px] font-semibold text-text-secondary hover:bg-bg-subtle hover:text-primary transition-colors flex items-center gap-2 rounded-sm"
+        >
+          Copy Code
+        </button>
       </div>
 
-      {/* Why this match */}
-      {result.reason && (
-        <div className="mt-4 p-3 text-[13.5px] text-text-secondary bg-primary-soft/5 border-l-[3px] border-primary rounded-r-md leading-relaxed">
-          <span className="font-mono text-[10px] font-bold tracking-widest uppercase text-primary mr-2">Why this match</span>
-          {result.reason}
-        </div>
-      )}
+      {/* Title */}
+      <div className="text-[14px] font-semibold text-text-secondary leading-snug font-serif pr-4">
+        {result.display_title || result.title}
+        {result.summary && (
+          <p className="text-[13px] text-text-muted mt-1 font-sans font-normal">
+            {result.summary}
+          </p>
+        )}
+      </div>
 
-      {/* Expanded Details */}
-      {expanded && (
-        <div className="mt-4 text-sm text-text-secondary leading-relaxed">
-          {result.description}
-        </div>
-      )}
+      <div className="h-px bg-border/80 w-full mt-2 mb-1" />
 
-      {/* Breadcrumb Hierarchy */}
-      {result.hierarchy_path && (
-        <div className="mt-4 flex flex-wrap items-center gap-1.5 text-xs text-text-muted">
-          {result.hierarchy_path.split(" > ").map((node, i, arr) => (
-            <React.Fragment key={i}>
-              <span className={i === arr.length - 1 ? "text-primary font-semibold" : ""}>
-                {node}
-              </span>
-              {i < arr.length - 1 && (
-                <span className="text-text-muted/50">›</span>
-              )}
-            </React.Fragment>
-          ))}
+      {/* Hierarchy Row */}
+      <div className="flex items-center w-full max-w-xl">
+        <div className="flex-1 flex flex-col gap-2">
+          <span className="text-[10px] text-text-muted uppercase font-semibold tracking-wider">Division</span>
+          <span className="text-[13px] text-primary font-medium">{division}</span>
         </div>
-      )}
+        <div className="flex-1 flex flex-col gap-2">
+          <span className="text-[10px] text-text-muted uppercase font-semibold tracking-wider">Group</span>
+          <span className="text-[13px] text-primary font-medium">{group}</span>
+        </div>
+        <div className="flex-1 flex flex-col gap-2">
+          <span className="text-[10px] text-text-muted uppercase font-semibold tracking-wider">Sub-Group</span>
+          <span className="text-[13px] text-primary font-medium">{subGroup}</span>
+        </div>
+      </div>
 
-      {/* Actions Row */}
-      <div className="mt-5 pt-4 border-t border-border flex flex-wrap items-center justify-between gap-3">
+      {/* Existing functional features, kept subtle so as not to disrupt the design */}
+      <div className="mt-2 flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-border/40 opacity-60 hover:opacity-100 transition-opacity">
         <div className="flex items-center gap-3">
           <button
             onClick={() => setExpanded(!expanded)}
-            className="flex items-center gap-1 text-[12.5px] font-semibold text-primary hover:text-primary-soft transition-colors"
+            className="flex items-center gap-1 text-[11px] font-medium text-text-muted hover:text-primary transition-colors"
           >
             {expanded ? "Hide details" : "Show details"}
-            {expanded ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
+            {expanded ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
           </button>
           <button
             onClick={() => onOpenDrawer(result)}
-            className="text-[12.5px] font-semibold text-primary hover:text-primary-soft hover:underline transition-colors"
+            className="text-[11px] font-medium text-text-muted hover:text-primary transition-colors"
           >
             View Details
           </button>
+          {/* Rank Badge if exists */}
+          {rank in RANK_LABELS && rank > 0 && (
+            <span className="text-[10px] bg-white border px-1.5 py-0.5 text-text-muted rounded-sm">
+              Rank {rank}
+            </span>
+          )}
         </div>
 
-        <div className="flex items-center gap-2">
-          {/* Feedback */}
+        <div className="flex items-center gap-3">
+          <div className="scale-75 origin-right">
+             <ConfidenceRing value={result.confidence} />
+          </div>
           <div className="flex items-center gap-1">
             <button
               onClick={() => handleFeedback("up")}
-              className={`w-8 h-8 rounded-md border flex items-center justify-center transition-all ${
+              className={`w-6 h-6 rounded border flex items-center justify-center transition-all ${
                 feedback === "up" 
                   ? "bg-success/10 border-success text-success" 
-                  : "bg-bg-subtle border-border text-text-muted hover:border-primary hover:text-primary"
+                  : "bg-surface border-border text-text-muted hover:border-primary hover:text-primary"
               }`}
             >
-              <ThumbsUp className="w-4 h-4" />
+              <ThumbsUp className="w-3 h-3" />
             </button>
             <button
               onClick={() => handleFeedback("down")}
-              className={`w-8 h-8 rounded-md border flex items-center justify-center transition-all ${
+              className={`w-6 h-6 rounded border flex items-center justify-center transition-all ${
                 feedback === "down" 
                   ? "bg-danger/10 border-danger text-danger" 
-                  : "bg-bg-subtle border-border text-text-muted hover:border-primary hover:text-primary"
+                  : "bg-surface border-border text-text-muted hover:border-primary hover:text-primary"
               }`}
             >
-              <ThumbsDown className="w-4 h-4" />
+              <ThumbsDown className="w-3 h-3" />
             </button>
           </div>
         </div>
       </div>
-    </Card>
+
+      {expanded && (
+        <div className="text-[13px] text-text-secondary mt-2">
+          {result.reason && (
+            <div className="mb-2 p-2 bg-primary-soft/5 border-l-[2px] border-primary text-[12px]">
+              <strong className="text-primary mr-1">Why:</strong> {result.reason}
+            </div>
+          )}
+          <p>{result.description}</p>
+        </div>
+      )}
+    </div>
   );
 }

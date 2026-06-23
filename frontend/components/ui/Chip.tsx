@@ -7,7 +7,7 @@ interface ChipProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {}
 export default function Chip({ children, className = "", ...props }: ChipProps) {
   return (
     <button 
-      className={`px-4 py-1.5 rounded-pill border border-border bg-surface text-sm font-medium text-text-muted hover:text-primary hover:border-primary-soft hover:shadow-sm transition-all hover:-translate-y-[1px] ${className}`}
+      className={`px-8 py-2 rounded-full border border-border bg-surface text-[13px] font-medium text-text-secondary hover:text-primary hover:border-primary-soft transition-colors flex-1 min-w-[150px] max-w-[250px] truncate justify-center ${className}`}
       {...props}
     >
       {children}

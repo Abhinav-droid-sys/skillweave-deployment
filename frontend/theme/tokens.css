@@ -4,42 +4,24 @@
 
 @layer base {
   :root {
-    --bg: #F4F5F7;
-    --bg-subtle: #FAFAFB;
+    --bg: #FFFFFF;
+    --bg-subtle: #EEF2FA;
     --surface: #FFFFFF;
-    --border: #E5E7EB;
-    --border-strong: #D8DBE2;
+    --border: #D1D9E8;
+    --border-strong: #A8B8D8;
 
-    --text: #0F172A;
-    --text-secondary: #475569;
-    --text-muted: #94A3B8;
+    --text: #0B1120;
+    --text-secondary: #334155;
+    --text-muted: #64748B;
 
-    --primary: #4F46E5;
-    --primary-soft: #6366F1;
-    --accent: #7C3AED;
-    --accent-soft: #8B5CF6;
+    --primary: #173273;
+    --primary-soft: #274996;
+    --accent: #173273;
+    --accent-soft: #274996;
 
     --success: #22C55E;
     --danger: #EF4444;
-    --focus-ring: rgba(99,102,241,0.45);
-  }
-
-  /* Optional Dark Mode - not strictly specified in prompt, but good to have fallback */
-  [data-theme="dark"] {
-    --bg: #0F172A;
-    --bg-subtle: #1E293B;
-    --surface: #0B1120;
-    --border: #334155;
-    --border-strong: #475569;
-
-    --text: #F8FAFC;
-    --text-secondary: #CBD5E1;
-    --text-muted: #64748B;
-
-    --primary: #818CF8;
-    --primary-soft: #6366F1;
-    --accent: #A78BFA;
-    --accent-soft: #8B5CF6;
+    --focus-ring: rgba(23, 50, 115, 0.3);
   }
 
   body {
@@ -53,6 +35,7 @@
 
 @layer utilities {
   .text-gradient {
-    @apply bg-clip-text text-transparent bg-signature-gradient;
+    @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(135deg, var(--primary) 0%, var(--primary-soft) 100%);
   }
 }

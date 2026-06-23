@@ -40,13 +40,13 @@ const config: Config = {
       },
       borderRadius: {
         pill: "9999px",
-        btn: "12px",
-        card: "20px",
-        search: "16px",
+        btn: "4px",
+        card: "4px",
+        search: "4px",
       },
       backgroundImage: {
-        "signature-gradient": "linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%)",
-        "search-gradient": "linear-gradient(135deg, #6366F1 0%, #818CF8 100%)",
+        "signature-gradient": "linear-gradient(135deg, var(--primary) 0%, var(--primary-soft) 100%)",
+        "search-gradient": "linear-gradient(135deg, var(--primary) 0%, var(--primary) 100%)",
       },
     },
   },

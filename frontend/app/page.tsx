@@ -14,9 +14,7 @@ import type { SearchResult } from "@/lib/types";
 import ResultCard from "@/components/results/ResultCard";
 import OccupationDrawer from "@/components/results/OccupationDrawer";
 
-const HERO_TITLE_1 = "Find the right occupation";
-const HERO_TITLE_2 = "in any Indian language";
-const EXAMPLES = ["kisan", "tractor driver", "software engineer", "teacher", "tailor"];
+const EXAMPLES = ["I grow wheat", "मैं गेहूं उगाता हूं", "সামুদ্রিক মাছ চাষের কার্যক্রম", "நான் உப்பு உற்பத்தி செய்கிறேன்"];
 
 export default function Home() {
   const { addHistory, currentQuery, setCurrentQuery } = useSearchStore();
@@ -68,32 +66,30 @@ export default function Home() {
     <div className="flex flex-col w-full">
       {/* Hero Stack */}
       <motion.div 
-        className="flex flex-col items-center justify-center text-center space-y-6 mb-12"
+        className="flex flex-col items-center justify-center w-full mb-12"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, staggerChildren: 0.1 }}
       >
-        <div className="space-y-1">
-          <h1 className="text-[clamp(2.4rem,5vw,3.5rem)] font-extrabold leading-[1.05] tracking-tight">
-            <span className="block text-text">{HERO_TITLE_1}</span>
-            <span className="block text-gradient">{HERO_TITLE_2}</span>
-          </h1>
-          <p className="text-text-secondary text-lg max-w-[620px] mx-auto mt-6">
-            Search 3,500+ NCO occupations using AI-powered multilingual semantic search.
+        <div className="w-full mx-auto bg-bg-subtle rounded-md p-6 sm:p-10 border border-border/60 shadow-sm relative mb-8">
+          <p className="text-[14px] font-semibold text-text-secondary mb-4 text-left">
+            Enter business activity description
           </p>
+          <div className="w-full">
+            <SearchBar 
+              value={query}
+              onChange={setQuery}
+              onSearch={handleSearch}
+              loading={loading}
+            />
+          </div>
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mt-3 text-xs text-text-muted">
+            <span className="italic">Supports natural language queries in multiple Indian languages in text or voice format</span>
+            <span className="font-semibold mt-2 sm:mt-0 text-text-secondary">NIC 2025</span>
+          </div>
         </div>
 
-        <div className="w-full pt-4">
-          <SearchBar 
-            value={query}
-            onChange={setQuery}
-            onSearch={handleSearch}
-            loading={loading}
-          />
-        </div>
-
-        <div className="flex flex-wrap items-center justify-center gap-2 pt-2">
-          <span className="text-sm font-medium text-text-muted mr-2">Try:</span>
+        <div className="flex flex-wrap items-center justify-center gap-3 w-full">
           {EXAMPLES.map((ex) => (
             <Chip key={ex} onClick={() => handleSelectQuery(ex)}>
               {ex}
@@ -176,11 +172,10 @@ export default function Home() {
               </div>
             )}
 
-            <div className="flex items-center justify-between px-2 pt-2 border-t border-border mt-2">
-              <h2 className="text-sm font-bold tracking-tight text-text-secondary">
-                Matching occupations
+            <div className="flex items-center justify-between mt-2 mb-4">
+              <h2 className="text-[13px] text-text-secondary">
+                Found <strong className="text-text font-semibold">{results.length} results</strong> in 0.2 seconds
               </h2>
-              <span className="text-xs font-medium text-text-muted">{results.length} results</span>
             </div>
 
             {loading ? (

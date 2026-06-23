@@ -8,34 +8,19 @@ import Footer from "./Footer";
 export default function AppShell({ children }: { children: React.ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  // Open sidebar by default on desktop
-  useEffect(() => {
-    if (typeof window !== "undefined" && window.innerWidth >= 768) {
-      setSidebarOpen(true);
-    }
-  }, []);
-
   return (
     <div className="relative min-h-screen bg-bg overflow-x-hidden text-text-secondary">
-      {/* Ambient background glow */}
-      <div className="fixed inset-0 pointer-events-none z-0">
-        <div className="absolute inset-0 opacity-[0.12]" style={{
-          background: "radial-gradient(circle at 50% -20%, var(--primary-soft) 0%, transparent 60%)"
-        }}></div>
-      </div>
-
       <Navbar onMenuClick={() => setSidebarOpen(!sidebarOpen)} />
 
       <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
       <div className="flex pt-16 min-h-screen relative z-10">
-        {/* Main content — shift right when sidebar is open on desktop */}
+        {/* Main content */}
         <main
           className="flex-1 overflow-y-auto transition-all duration-300 ease-in-out"
-          style={{ marginLeft: sidebarOpen ? "280px" : "0" }}
         >
-          <div className="max-w-[1120px] mx-auto px-4 sm:px-6 lg:px-8 py-16 min-h-full flex flex-col">
-            <div className="flex-1">
+          <div className="flex flex-col min-h-[calc(100vh-64px)]">
+            <div className="flex-1 max-w-[1120px] mx-auto w-full px-4 sm:px-6 lg:px-8 py-8">
               {children}
             </div>
             <Footer />

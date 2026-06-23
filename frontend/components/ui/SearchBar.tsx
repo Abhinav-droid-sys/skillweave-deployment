@@ -98,62 +98,66 @@ export default function SearchBar({ value, onChange, onSearch, loading }: Search
   return (
     <form 
       onSubmit={handleSubmit}
-      className={`
-        relative flex items-center w-full max-w-[880px] bg-surface rounded-search border
-        transition-all duration-300 mx-auto
-        ${isFocused ? "border-primary shadow-focus" : "border-border shadow-sm hover:border-border-strong"}
-      `}
+      className="relative flex items-center w-full gap-3"
     >
-      <div className="pl-5 pr-3 text-text-muted">
-        <Search className="w-5 h-5" />
+      <div className={`
+        flex-1 flex items-center bg-surface border rounded-sm transition-all duration-300
+        ${isFocused ? "border-primary shadow-sm" : "border-border hover:border-border-strong"}
+      `}>
+        <input
+          type="text"
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          onFocus={() => setIsFocused(true)}
+          onBlur={() => setIsFocused(false)}
+          placeholder="Enter description"
+          className="flex-1 py-3 px-4 bg-transparent outline-none text-text placeholder:text-text-muted text-[15px]"
+          aria-label="Search occupations"
+        />
+
+        <div className="flex items-center pr-2 gap-1">
+          {value && (
+            <button
+              type="button"
+              onClick={() => onChange("")}
+              className="p-2 text-text-muted hover:text-text"
+            >
+              <span className="text-[18px] leading-none">&times;</span>
+            </button>
+          )}
+          <button
+            type="button"
+            onClick={toggleMic}
+            className={`
+              relative p-2 rounded-full transition-colors flex items-center justify-center border
+              ${isListening ? "text-primary border-primary bg-primary-soft/10" : "text-text-muted border-border hover:bg-bg-subtle hover:text-text"}
+            `}
+            aria-label={isListening ? "Stop listening" : "Start voice search"}
+            aria-live="polite"
+          >
+            <Mic className="w-4 h-4 relative z-10" />
+            <AnimatePresence>
+              {isListening && (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1.5 }}
+                  exit={{ opacity: 0, scale: 0.8 }}
+                  transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut" }}
+                  className="absolute inset-0 bg-primary-soft/20 rounded-full"
+                />
+              )}
+            </AnimatePresence>
+          </button>
+        </div>
       </div>
 
-      <input
-        type="text"
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        onFocus={() => setIsFocused(true)}
-        onBlur={() => setIsFocused(false)}
-        placeholder='Describe the occupation… e.g. "farmer, teacher, software engineer, tractor driver…"'
-        className="flex-1 py-4 bg-transparent outline-none text-text placeholder:text-text-muted/70 text-base"
-        aria-label="Search occupations"
-      />
-
-      <div className="flex items-center gap-3 pr-2">
-
-        <button
-          type="button"
-          onClick={toggleMic}
-          className={`
-            relative p-3 rounded-full transition-colors flex items-center justify-center
-            ${isListening ? "text-primary" : "text-text-muted hover:bg-bg-subtle hover:text-text"}
-          `}
-          aria-label={isListening ? "Stop listening" : "Start voice search"}
-          aria-live="polite"
-        >
-          <Mic className="w-5 h-5 relative z-10" />
-          <AnimatePresence>
-            {isListening && (
-              <motion.div
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1.5 }}
-                exit={{ opacity: 0, scale: 0.8 }}
-                transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut" }}
-                className="absolute inset-0 bg-primary-soft/20 rounded-full"
-              />
-            )}
-          </AnimatePresence>
-        </button>
-
-        <button
-          type="submit"
-          disabled={loading || !value.trim()}
-          className="bg-search-gradient text-white flex items-center gap-2 px-6 py-3 rounded-btn font-semibold shadow-sm hover:shadow-md hover:scale-[1.02] transition-all disabled:opacity-50 disabled:pointer-events-none"
-        >
-          {loading ? "Searching..." : "Search"}
-          {!loading && <ArrowRight className="w-4 h-4" />}
-        </button>
-      </div>
+      <button
+        type="submit"
+        disabled={loading || !value.trim()}
+        className="bg-primary text-white px-8 py-3 rounded-sm font-semibold text-[15px] transition-all disabled:opacity-50 disabled:pointer-events-none hover:bg-primary-soft shrink-0 h-full min-h-[46px]"
+      >
+        {loading ? "..." : "Search"}
+      </button>
     </form>
   );
 }

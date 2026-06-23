@@ -4,10 +4,18 @@ import React from "react";
 
 export default function Footer() {
   return (
-    <footer className="mt-12 py-8 border-t border-border/50 text-center">
-      <p className="text-[0.85rem] text-text-muted">
-        AI-powered semantic search &middot; Multilingual &middot; Voice-ready &mdash; <span className="font-semibold text-text">SkillWeave</span>
-      </p>
-    </footer>
+    <div className="mt-auto pt-16 flex flex-col items-center">
+      <div className="mb-8 w-full flex justify-center">
+        <button className="px-6 py-2.5 bg-surface border border-border text-text-secondary text-[13px] font-semibold shadow-sm hover:border-border-strong hover:bg-bg-subtle transition-colors">
+          Provide Feedback
+        </button>
+      </div>
+      
+      <footer className="w-full bg-primary py-4 px-4 text-center">
+        <p className="text-[11px] text-white/90">
+          © 2026 Developed by Data Informatics & Innovation Division, Ministry of Statistics & Programme Implementation, Government of India | Disclaimer | Terms of Use | Feedback | Version No. 2.0
+        </p>
+      </footer>
+    </div>
   );
 }

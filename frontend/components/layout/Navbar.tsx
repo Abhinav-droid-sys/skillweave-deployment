@@ -19,45 +19,39 @@ export default function Navbar({ onMenuClick }: NavbarProps) {
   ];
 
   return (
-    <header className="fixed top-0 left-0 right-0 h-16 bg-surface/90 backdrop-blur-md border-b border-border z-50 flex items-center justify-between px-4 sm:px-6">
-      {/* Left */}
-      <div className="flex items-center gap-3">
+    <header className="fixed top-0 left-0 right-0 h-[80px] bg-surface/95 backdrop-blur-md border-b border-border z-50 flex items-center justify-between px-4 sm:px-6">
+      {/* Left: Menu & Logos */}
+      <div className="flex items-center gap-4">
         <button onClick={onMenuClick} className="p-2 text-text-muted hover:text-text transition-colors">
           <Menu className="w-5 h-5" />
         </button>
         <Link href="/" className="flex items-center gap-3 group">
-          <div className="w-9 h-9 rounded-[12px] bg-signature-gradient flex items-center justify-center shadow-sm">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <polyline points="7 10 12 15 17 10" />
-              <polyline points="7 6 12 11 17 6" />
-            </svg>
-          </div>
-          <div className="flex flex-col">
-            <span className="font-bold text-text leading-tight group-hover:text-primary transition-colors">SkillWeave</span>
-            <span className="text-[0.72rem] text-text-muted font-medium tracking-wide uppercase">AI Occupation Intelligence</span>
-          </div>
+          <img src="/mospi-logo.webp" alt="Govt of India" className="h-10 sm:h-12 w-auto object-contain" />
+          <img src="/data-for-development-logo.webp" alt="Data for Development" className="h-10 sm:h-12 w-auto object-contain hidden sm:block" />
         </Link>
       </div>
 
-      {/* Center Status Pill */}
-      <div className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-pill border border-border bg-surface shadow-sm">
-        <div className="w-2 h-2 rounded-full bg-success"></div>
-        <span className="text-xs font-mono font-medium text-text-secondary tracking-wide">NCO 2015</span>
+      {/* Center: Title */}
+      <div className="hidden lg:flex flex-1 flex-col items-center justify-center text-center px-4 pointer-events-none overflow-hidden">
+        <h1 className="text-[1.1rem] xl:text-[22px] font-bold text-primary tracking-tight font-serif truncate w-full">
+          MoSPI AI-Powered NCO Code Semantic Search Tool<sup className="text-[10px] font-normal text-text-muted ml-1 relative -top-2">Beta</sup>
+        </h1>
+        <p className="text-[12px] xl:text-[13px] text-text-secondary mt-0.5 truncate w-full">Data Informatics and Innovation Division</p>
       </div>
 
-      {/* Right */}
+      {/* Right: Functional Icons (Preserved) */}
       <div className="flex items-center gap-1 sm:gap-2">
-        <nav className="hidden lg:flex items-center gap-1 mr-2">
+        <nav className="hidden xl:flex items-center gap-1 mr-2">
           {navLinks.map((link) => {
             const isActive = pathname === link.href;
             const Icon = link.icon;
             return (
-              <Link
+               <Link
                 key={link.name}
                 href={link.href}
                 className={`flex items-center gap-2 px-3 py-2 rounded-btn text-sm font-medium transition-colors ${
                   isActive 
-                    ? "text-primary bg-primary-soft/10" 
+                    ? "text-primary bg-bg-subtle" 
                     : "text-text-secondary hover:text-text hover:bg-bg-subtle"
                 }`}
               >
@@ -68,7 +62,7 @@ export default function Navbar({ onMenuClick }: NavbarProps) {
           })}
         </nav>
 
-        <div className="hidden lg:block w-px h-6 bg-border mx-2"></div>
+        <div className="hidden xl:block w-px h-6 bg-border mx-2"></div>
 
         <Link href="/settings#language" className="p-2 text-text-secondary hover:text-primary hover:bg-bg-subtle rounded-btn transition-colors" aria-label="Language/Region">
           <Globe className="w-5 h-5" />
@@ -76,7 +70,7 @@ export default function Navbar({ onMenuClick }: NavbarProps) {
         <Link href="/settings" className="p-2 text-text-secondary hover:text-primary hover:bg-bg-subtle rounded-btn transition-colors" aria-label="Settings">
           <Settings className="w-5 h-5" />
         </Link>
-        <button className="ml-1 flex items-center gap-2 px-3 py-1.5 bg-bg-subtle border border-border hover:border-primary-soft/50 rounded-pill transition-colors text-sm font-medium text-text-secondary hover:text-text">
+        <button className="ml-1 flex items-center gap-2 px-3 py-1.5 bg-bg-subtle border border-border hover:border-border-strong rounded-pill transition-colors text-sm font-medium text-text-secondary hover:text-text">
           <User className="w-4 h-4 text-text-muted" />
           <span className="hidden sm:inline">Admin</span>
         </button>
