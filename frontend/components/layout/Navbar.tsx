@@ -3,7 +3,7 @@
 import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutGrid, TrendingUp, Layers, Globe, Settings, User, Menu } from "lucide-react";
+import { LayoutGrid, Layers, Globe, Settings, User, Menu } from "lucide-react";
 
 interface NavbarProps {
   onMenuClick: () => void;
@@ -14,7 +14,6 @@ export default function Navbar({ onMenuClick }: NavbarProps) {
 
   const navLinks = [
     { name: "Dashboard", href: "/dashboard", icon: LayoutGrid },
-    { name: "Metrics", href: "/metrics", icon: TrendingUp },
     { name: "Batch Coding", href: "/batch", icon: Layers },
   ];
 
