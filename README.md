@@ -57,7 +57,7 @@ By leveraging cutting-edge Vector Databases, fully local LLM-based reranking (Ge
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/Rishita0573/skillweave-final-project.git
+git clone https://github.com/Abhinav-droid-sys/skillweave-deployment.git
 cd skillweave-final-project
 ```
 
