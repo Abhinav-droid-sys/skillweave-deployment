@@ -49,7 +49,7 @@ class Settings(BaseSettings):
 
     # --- LLM reranking (reuses the LLM_* settings above) ---
     rerank: bool = True            # reorder + score results with the LLM (needs LLM configured)
-    rerank_pool: int = 15          # candidates fetched for reranking before trimming to top_k
+    rerank_pool: int = 10          # candidates fetched for reranking before trimming to top_k
 
     # --- Phase 4: speech-to-text (Whisper via OpenAI-compatible endpoint, e.g. Groq) ---
     stt_enabled: bool = True
