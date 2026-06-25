@@ -4,7 +4,7 @@ from __future__ import annotations
 import time
 from contextlib import asynccontextmanager
 
-from fastapi import Depends, FastAPI, File, Form, HTTPException, UploadFile
+from fastapi import Depends, FastAPI, File, Form, HTTPException, UploadFile, Response
 from fastapi.middleware.cors import CORSMiddleware
 from qdrant_client import models
 from sqlalchemy.orm import Session
@@ -28,7 +28,7 @@ from .auth import (
     hash_password, verify_password,
     generate_totp_secret, totp_qr_base64, get_totp_uri, verify_totp,
     make_preauth_token, make_session_token,
-    require_admin, require_preauth,
+    require_admin, require_preauth, require_auth_cookie,
 )
 from .schemas import (
     AssignRequest,
@@ -100,7 +100,8 @@ app = FastAPI(title="NCO 2015 Semantic Search API", version="0.1.0", lifespan=li
 # Open CORS for local frontend development (locked down in Phase 5).
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["http://localhost:3000"],
+    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -358,7 +359,7 @@ def search(req: SearchRequest, db: Session = Depends(get_db)) -> SearchResponse:
 
 
 @app.post("/search/batch", response_model=BatchSearchResponse)
-def search_batch(req: BatchSearchRequest) -> BatchSearchResponse:
+def search_batch(req: BatchSearchRequest, _: dict = Depends(require_auth_cookie)) -> BatchSearchResponse:
     embedder: Embedder = state["embedder"]
     store: VectorStore = state["store"]
     normalizer: QueryNormalizer = state["normalizer"]
@@ -452,7 +453,7 @@ def submit_feedback(req: FeedbackRequest, db: Session = Depends(get_db)) -> Feed
 # ── Feature 2: Audit Trail ────────────────────────────────────────────────
 
 @app.get("/audit")
-def get_audit(db: Session = Depends(get_db)) -> dict:
+def get_audit(db: Session = Depends(get_db), _: dict = Depends(require_auth_cookie)) -> dict:
     """Combined audit view: search log, assignments, overrides, feedback."""
     return audit_summary(db)
 
@@ -460,7 +461,7 @@ def get_audit(db: Session = Depends(get_db)) -> dict:
 # ── Feature 5: Dashboard ──────────────────────────────────────────────────
 
 @app.get("/dashboard")
-def get_dashboard(db: Session = Depends(get_db)) -> dict:
+def get_dashboard(db: Session = Depends(get_db), _: dict = Depends(require_auth_cookie)) -> dict:
     """All stats for the three dashboard panels: usage, audit, performance."""
     return dashboard_stats(db)
 
@@ -530,6 +531,38 @@ def admin_login(req: LoginRequest) -> TokenResponse:
         raise HTTPException(status_code=401, detail="Invalid credentials.")
     token = make_preauth_token()
     return TokenResponse(access_token=token, expires_in_minutes=5)
+
+
+@app.post("/auth/web/login")
+def web_login(req: LoginRequest, response: Response) -> dict:
+    """Web login for dashboard. Sets an HttpOnly cookie."""
+    if req.username != settings.admin_username:
+        raise HTTPException(status_code=401, detail="Invalid credentials.")
+    if not settings.admin_password_hash:
+        raise HTTPException(
+            status_code=503,
+            detail="Admin password not configured. Run /admin/auth/setup first.",
+        )
+    if not verify_password(req.password, settings.admin_password_hash):
+        raise HTTPException(status_code=401, detail="Invalid credentials.")
+    
+    token = make_session_token()
+    response.set_cookie(
+        key="auth_token",
+        value=token,
+        httponly=True,
+        secure=False,  # Must be false for local http://
+        samesite="lax",
+        max_age=settings.jwt_expire_minutes * 60,
+    )
+    return {"status": "success", "message": "Logged in successfully"}
+
+
+@app.post("/auth/web/logout")
+def web_logout(response: Response) -> dict:
+    """Clears the web session cookie."""
+    response.delete_cookie("auth_token", secure=False, samesite="lax")
+    return {"status": "success", "message": "Logged out successfully"}
 
 
 @app.post("/admin/auth/verify-2fa", response_model=TokenResponse)

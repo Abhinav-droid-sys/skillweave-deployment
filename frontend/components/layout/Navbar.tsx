@@ -2,8 +2,8 @@
 
 import React from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { LayoutGrid, Layers, Globe, Settings, User, Menu } from "lucide-react";
+import { usePathname, useRouter } from "next/navigation";
+import { LayoutGrid, Layers, Globe, Settings, LogOut, Menu } from "lucide-react";
 
 interface NavbarProps {
   onMenuClick: () => void;
@@ -11,6 +11,21 @@ interface NavbarProps {
 
 export default function Navbar({ onMenuClick }: NavbarProps) {
   const pathname = usePathname();
+  const router = useRouter();
+
+  const handleLogout = async () => {
+    try {
+      await fetch(`${process.env.NEXT_PUBLIC_API_BASE || "http://localhost:8000"}/auth/web/logout`, {
+        method: "POST",
+        credentials: "include"
+      });
+    } catch (e) {
+      console.error("Logout failed", e);
+    } finally {
+      router.push("/login");
+      router.refresh();
+    }
+  };
 
   const navLinks = [
     { name: "Dashboard", href: "/dashboard", icon: LayoutGrid },
@@ -69,9 +84,12 @@ export default function Navbar({ onMenuClick }: NavbarProps) {
         <Link href="/settings" className="p-2 text-text-secondary hover:text-primary hover:bg-bg-subtle rounded-btn transition-colors" aria-label="Settings">
           <Settings className="w-5 h-5" />
         </Link>
-        <button className="ml-1 flex items-center gap-2 px-3 py-1.5 bg-bg-subtle border border-border hover:border-border-strong rounded-pill transition-colors text-sm font-medium text-text-secondary hover:text-text">
-          <User className="w-4 h-4 text-text-muted" />
-          <span className="hidden sm:inline">Admin</span>
+        <button 
+          onClick={handleLogout}
+          className="ml-1 flex items-center gap-2 px-3 py-1.5 bg-bg-subtle border border-border hover:border-danger hover:text-danger rounded-pill transition-colors text-sm font-medium text-text-secondary"
+        >
+          <LogOut className="w-4 h-4" />
+          <span className="hidden sm:inline">Logout</span>
         </button>
       </div>
     </header>

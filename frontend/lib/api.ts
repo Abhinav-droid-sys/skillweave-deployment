@@ -39,6 +39,7 @@ export async function searchOccupationsBatch(
   const res = await fetch(`${BASE}/search/batch`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
+    credentials: "include",
     body: JSON.stringify(body),
   });
   if (!res.ok) {

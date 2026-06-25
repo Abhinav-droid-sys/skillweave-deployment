@@ -37,7 +37,7 @@ from typing import Annotated
 import bcrypt
 import pyotp
 import qrcode
-from fastapi import Depends, HTTPException, status
+from fastapi import Depends, HTTPException, status, Request
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from jose import JWTError, jwt
 
@@ -166,4 +166,21 @@ def require_preauth(
     payload = _decode_token(creds.credentials)
     if payload.get("type") != _TYPE_PREAUTH:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Pre-auth token required.")
+    return payload
+
+
+def require_auth_cookie(request: Request) -> dict:
+    """Dependency: validates a session JWT from an HttpOnly cookie."""
+    token = request.cookies.get("auth_token")
+    if not token:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Authentication cookie missing.",
+        )
+    payload = _decode_token(token)
+    if payload.get("type") != _TYPE_SESSION:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid session type in cookie.",
+        )
     return payload
