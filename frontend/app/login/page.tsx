@@ -29,8 +29,10 @@ export default function Login() {
         throw new Error(errData.detail || "Invalid username or password");
       }
 
-      // Force a full page reload to guarantee the browser sends the new cookie to Next.js middleware
-      window.location.href = "/dashboard";
+      // Set admin role for the UI
+      localStorage.setItem("userMode", "admin");
+      // On success, redirect to search
+      window.location.href = "/search";
     } catch (err: any) {
       console.error("Login Error:", err);
       setError(err.message || "Failed to login");

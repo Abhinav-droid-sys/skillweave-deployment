@@ -3,7 +3,8 @@
 import React from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { LayoutGrid, Layers, Globe, Settings, LogOut, Menu } from "lucide-react";
+import { LayoutGrid, Layers, Home, Settings, LogOut, Menu } from "lucide-react";
+import { useLanguage } from "@/lib/LanguageContext";
 
 interface NavbarProps {
   onMenuClick: () => void;
@@ -12,24 +13,34 @@ interface NavbarProps {
 export default function Navbar({ onMenuClick }: NavbarProps) {
   const pathname = usePathname();
   const router = useRouter();
+  const { t } = useLanguage();
+  const [isAdmin, setIsAdmin] = React.useState(false);
+
+  React.useEffect(() => {
+    setIsAdmin(localStorage.getItem("userMode") === "admin");
+  }, [pathname]);
 
   const handleLogout = async () => {
     try {
-      await fetch(`/api/auth/web/logout`, {
-        method: "POST",
-        credentials: "include"
-      });
+      // If admin, send the logout request to destroy the cookie
+      if (isAdmin) {
+        await fetch(`/api/auth/web/logout`, {
+          method: "POST",
+          credentials: "include"
+        });
+      }
     } catch (e) {
       console.error("Logout failed", e);
     } finally {
-      router.push("/login");
+      localStorage.removeItem("userMode");
+      router.push("/");
       router.refresh();
     }
   };
 
   const navLinks = [
-    { name: "Dashboard", href: "/dashboard", icon: LayoutGrid },
-    { name: "Batch Coding", href: "/batch", icon: Layers },
+    ...(isAdmin ? [{ name: t("Dashboard"), href: "/dashboard", icon: LayoutGrid }] : []),
+    { name: t("Batch Coding"), href: "/batch", icon: Layers },
   ];
 
   return (
@@ -39,7 +50,7 @@ export default function Navbar({ onMenuClick }: NavbarProps) {
         <button onClick={onMenuClick} className="p-2 text-text-muted hover:text-text transition-colors">
           <Menu className="w-5 h-5" />
         </button>
-        <Link href="/" className="flex items-center gap-3 group">
+        <Link href="/search" className="flex items-center gap-3 group">
           <img src="/mospi-logo.webp" alt="Govt of India" className="h-10 sm:h-12 w-auto object-contain" />
           <img src="/data-for-development-logo.webp" alt="Data for Development" className="h-10 sm:h-12 w-auto object-contain hidden sm:block" />
         </Link>
@@ -78,8 +89,8 @@ export default function Navbar({ onMenuClick }: NavbarProps) {
 
         <div className="hidden xl:block w-px h-6 bg-border mx-2"></div>
 
-        <Link href="/settings#language" className="p-2 text-text-secondary hover:text-primary hover:bg-bg-subtle rounded-btn transition-colors" aria-label="Language/Region">
-          <Globe className="w-5 h-5" />
+        <Link href="/search" className="p-2 text-text-secondary hover:text-primary hover:bg-bg-subtle rounded-btn transition-colors" aria-label="Home">
+          <Home className="w-5 h-5" />
         </Link>
         <Link href="/settings" className="p-2 text-text-secondary hover:text-primary hover:bg-bg-subtle rounded-btn transition-colors" aria-label="Settings">
           <Settings className="w-5 h-5" />
@@ -89,7 +100,7 @@ export default function Navbar({ onMenuClick }: NavbarProps) {
           className="ml-1 flex items-center gap-2 px-3 py-1.5 bg-bg-subtle border border-border hover:border-danger hover:text-danger rounded-pill transition-colors text-sm font-medium text-text-secondary"
         >
           <LogOut className="w-4 h-4" />
-          <span className="hidden sm:inline">Logout</span>
+          <span className="hidden sm:inline">{t("Logout")}</span>
         </button>
       </div>
     </header>

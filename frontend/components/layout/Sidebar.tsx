@@ -33,7 +33,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
       {/* Sidebar panel */}
       <aside
         className={`
-          fixed top-16 left-0 h-[calc(100vh-4rem)] bg-bg-subtle border-r border-border
+          fixed top-20 left-0 h-[calc(100vh-5rem)] bg-bg-subtle border-r border-border
           w-[280px] z-50 flex flex-col shrink-0
           transition-transform duration-300 ease-in-out
           ${isOpen ? "translate-x-0" : "-translate-x-full"}

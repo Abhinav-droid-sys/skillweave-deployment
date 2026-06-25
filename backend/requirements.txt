@@ -20,4 +20,5 @@ torch>=2.0.0
 transformers>=4.30.0
 sacremoses>=0.0.53
 sentencepiece>=0.1.99
+faster-whisper>=1.0
 # indictranstoolkit (Requires C++ Build Tools on Windows for offline mode)

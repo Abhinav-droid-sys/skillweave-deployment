@@ -308,6 +308,12 @@ export default function Dashboard() {
         fetch(`/api/audit`, { credentials: "include" }),
       ]);
 
+      if (dashRes.status === 401 || auditRes.status === 401) {
+        localStorage.removeItem("userMode");
+        window.location.href = "/";
+        return;
+      }
+
       if (!dashRes.ok) throw new Error(`Dashboard API error: ${dashRes.statusText}`);
       if (!auditRes.ok) throw new Error(`Audit API error: ${auditRes.statusText}`);
 

@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
-import { Search, Mic, ArrowRight } from "lucide-react";
+import React, { useState, useRef, useEffect } from "react";
+import { Search, Mic, ArrowRight, Square } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 interface SearchBarProps {
@@ -14,88 +14,81 @@ interface SearchBarProps {
 export default function SearchBar({ value, onChange, onSearch, loading }: SearchBarProps) {
   const [isFocused, setIsFocused] = useState(false);
   const [isListening, setIsListening] = useState(false);
-  const [voiceLang, setVoiceLang] = useState("en-IN");
+  const [isTranscribing, setIsTranscribing] = useState(false);
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const audioChunksRef = useRef<BlobPart[]>([]);
+  const valueRef = useRef(value);
+
+  useEffect(() => {
+    valueRef.current = value;
+  }, [value]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (value.trim()) onSearch(value);
   };
 
-  const toggleMic = () => {
-    // If already listening, stop it.
+  const toggleMic = async () => {
     if (isListening) {
-      if ((window as any).__recognition) {
-        (window as any).__recognition.stop();
+      if (mediaRecorderRef.current && mediaRecorderRef.current.state !== "inactive") {
+        mediaRecorderRef.current.stop();
       }
       setIsListening(false);
       return;
     }
-
-    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
-    if (!SpeechRecognition) {
-      alert("Voice search is not supported in this browser. Please try using Google Chrome or Microsoft Edge.");
-      return;
-    }
-
-    const recognition = new SpeechRecognition();
-    (window as any).__recognition = recognition;
-    
-    // continuous=true keeps the mic open until stopped. 
-    // interimResults=true gives us the words as the user is speaking them.
-    recognition.continuous = true;
-    recognition.interimResults = true;
-    recognition.lang = voiceLang;
-
-    // Capture the current input value so we can append to it
-    let baseTranscript = value;
-
-    recognition.onstart = () => {
-      setIsListening(true);
-    };
-
-    recognition.onresult = (event: any) => {
-      let interim = "";
-      let final = "";
-
-      for (let i = event.resultIndex; i < event.results.length; ++i) {
-        if (event.results[i].isFinal) {
-          final += event.results[i][0].transcript;
-        } else {
-          interim += event.results[i][0].transcript;
-        }
-      }
-
-      // Live update the search box as the user speaks!
-      const displayText = (baseTranscript + " " + final + interim).trim();
-      onChange(displayText);
-
-      // Once a sentence is finalized, update the base for the next sentence
-      if (final) {
-        baseTranscript = (baseTranscript + " " + final).trim();
-      }
-    };
-
-    recognition.onerror = (event: any) => {
-      console.error("Voice recognition error:", event.error);
-      if (event.error === 'not-allowed') {
-        alert("Microphone access was denied. Please allow microphone permissions in your browser settings.");
-      }
-      setIsListening(false);
-    };
-
-    recognition.onend = () => {
-      setIsListening(false);
-    };
 
     try {
-      recognition.start();
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const mediaRecorder = new MediaRecorder(stream);
+      mediaRecorderRef.current = mediaRecorder;
+      audioChunksRef.current = [];
+
+      mediaRecorder.ondataavailable = (event) => {
+        if (event.data.size > 0) {
+          audioChunksRef.current.push(event.data);
+        }
+      };
+
+      mediaRecorder.onstop = async () => {
+        const audioBlob = new Blob(audioChunksRef.current, { type: "audio/webm" });
+        const formData = new FormData();
+        formData.append("file", audioBlob, "recording.webm");
+
+        setIsTranscribing(true);
+        try {
+          const response = await fetch("/api/transcribe", {
+            method: "POST",
+            body: formData,
+          });
+
+          if (!response.ok) {
+            throw new Error("Transcription failed");
+          }
+
+          const data = await response.json();
+          if (data.transcript) {
+            const currentVal = valueRef.current;
+            onChange(currentVal ? currentVal + " " + data.transcript : data.transcript);
+          }
+        } catch (error) {
+          console.error("Transcription error:", error);
+          alert("Failed to transcribe audio.");
+        } finally {
+          setIsTranscribing(false);
+          stream.getTracks().forEach(track => track.stop());
+        }
+      };
+
+      mediaRecorder.start();
+      setIsListening(true);
     } catch (err) {
-      console.error("Error starting recognition:", err);
-      setIsListening(false);
+      console.error("Error accessing microphone:", err);
+      alert("Microphone access was denied or not available.");
     }
   };
 
   return (
+    <div className="flex flex-col w-full relative">
     <form 
       onSubmit={handleSubmit}
       className="relative flex items-center w-full gap-3"
@@ -135,7 +128,11 @@ export default function SearchBar({ value, onChange, onSearch, loading }: Search
             aria-label={isListening ? "Stop listening" : "Start voice search"}
             aria-live="polite"
           >
-            <Mic className="w-4 h-4 relative z-10" />
+            {isListening ? (
+              <Square className="w-4 h-4 fill-current relative z-10" />
+            ) : (
+              <Mic className="w-4 h-4 relative z-10" />
+            )}
             <AnimatePresence>
               {isListening && (
                 <motion.div
@@ -159,5 +156,19 @@ export default function SearchBar({ value, onChange, onSearch, loading }: Search
         {loading ? "..." : "Search"}
       </button>
     </form>
+    <AnimatePresence>
+      {isTranscribing && (
+        <motion.div 
+          initial={{ opacity: 0, height: 0 }}
+          animate={{ opacity: 1, height: "auto" }}
+          exit={{ opacity: 0, height: 0 }}
+          className="text-xs text-primary font-medium flex items-center gap-1.5 mt-2 pl-2 overflow-hidden"
+        >
+          <div className="w-3 h-3 border-2 border-primary border-t-transparent rounded-full animate-spin shrink-0" />
+          <span>Transcribing audio, please wait...</span>
+        </motion.div>
+      )}
+    </AnimatePresence>
+    </div>
   );
 }

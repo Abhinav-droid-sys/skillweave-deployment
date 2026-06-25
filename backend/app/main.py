@@ -24,6 +24,7 @@ from .qdrant_store import VectorStore
 from .llm_client import LLMClient
 from .rerank import LLMReranker
 from .translator import translator_service
+from .audio import AudioTranscriber
 from .auth import (
     hash_password, verify_password,
     generate_totp_secret, totp_qr_base64, get_totp_uri, verify_totp,
@@ -91,6 +92,7 @@ async def lifespan(app: FastAPI):
         enabled=settings.rerank and settings.llm_normalize,
         timeout=settings.llm_timeout,
     )
+    state["transcriber"] = AudioTranscriber(model_size="small")
     yield
     state.clear()
 
@@ -105,6 +107,15 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+@app.post("/transcribe")
+def transcribe_audio(file: UploadFile = File(...)):
+    """Transcribes an uploaded audio file using Faster-Whisper."""
+    transcriber = state.get("transcriber")
+    if not transcriber:
+        raise HTTPException(status_code=503, detail="Transcriber model not loaded")
+    return {"transcript": transcriber.transcribe(file)}
 
 
 @app.get("/health")
