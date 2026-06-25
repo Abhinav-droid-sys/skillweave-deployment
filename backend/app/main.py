@@ -564,6 +564,7 @@ def web_login(req: LoginRequest, response: Response) -> dict:
         httponly=True,
         secure=False,  # Must be false for local http://
         samesite="lax",
+        path="/",
         max_age=settings.jwt_expire_minutes * 60,
     )
     return {"status": "success", "message": "Logged in successfully"}
@@ -572,7 +573,7 @@ def web_login(req: LoginRequest, response: Response) -> dict:
 @app.post("/auth/web/logout")
 def web_logout(response: Response) -> dict:
     """Clears the web session cookie."""
-    response.delete_cookie("auth_token", secure=False, samesite="lax")
+    response.delete_cookie("auth_token", secure=False, samesite="lax", path="/")
     return {"status": "success", "message": "Logged out successfully"}
 
 

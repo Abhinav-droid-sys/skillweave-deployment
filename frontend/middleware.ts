@@ -17,8 +17,8 @@ export function middleware(request: NextRequest) {
 
   // Prevent logged-in users from accessing the login page
   if (request.nextUrl.pathname === '/login' && token) {
-    const dashboardUrl = new URL('/dashboard', request.url);
-    return NextResponse.redirect(dashboardUrl);
+    const searchUrl = new URL('/search', request.url);
+    return NextResponse.redirect(searchUrl);
   }
 
   return NextResponse.next();

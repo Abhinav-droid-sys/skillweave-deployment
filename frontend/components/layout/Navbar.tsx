@@ -22,13 +22,11 @@ export default function Navbar({ onMenuClick }: NavbarProps) {
 
   const handleLogout = async () => {
     try {
-      // If admin, send the logout request to destroy the cookie
-      if (isAdmin) {
-        await fetch(`/api/auth/web/logout`, {
-          method: "POST",
-          credentials: "include"
-        });
-      }
+      // Always attempt to logout to destroy any residual backend cookie
+      await fetch(`/api/auth/web/logout`, {
+        method: "POST",
+        credentials: "include"
+      });
     } catch (e) {
       console.error("Logout failed", e);
     } finally {
