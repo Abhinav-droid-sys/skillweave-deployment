@@ -228,10 +228,10 @@ const LanguageRadarChart = ({ data }: { data: any[] }) => {
   );
 };
 
-const GemmaImpactPanel = ({ stats }: { stats: any }) => {
+const QwenImpactPanel = ({ stats }: { stats: any }) => {
   if (!stats) return null;
-  const total = stats.gemma_invocations + stats.vector_invocations;
-  const gemmaPct = total > 0 ? Math.round((stats.gemma_invocations / total) * 100) : 0;
+  const total = stats.qwen_invocations + stats.vector_invocations;
+  const qwenPct = total > 0 ? Math.round((stats.qwen_invocations / total) * 100) : 0;
   
   return (
     <div className="dashboard-card p-5 mb-6 relative overflow-hidden bg-gradient-to-br from-[var(--surface)] to-[var(--bg-subtle)] border-[var(--violet)] border-l-4">
@@ -240,9 +240,9 @@ const GemmaImpactPanel = ({ stats }: { stats: any }) => {
       </div>
       
       <h3 className="text-xl font-bold font-['Space_Grotesk'] text-[var(--violet)] mb-1 flex items-center gap-2">
-        <span className="text-2xl">✨</span> Gemma Model Impact
+        <span className="text-2xl">✨</span> Qwen Model Impact
       </h3>
-      <p className="text-sm text-[var(--text-secondary)] mb-6">Analyzing the intelligence layer powered by your local Gemma model.</p>
+      <p className="text-sm text-[var(--text-secondary)] mb-6">Analyzing the intelligence layer powered by your local Qwen model.</p>
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         <div>
@@ -250,13 +250,13 @@ const GemmaImpactPanel = ({ stats }: { stats: any }) => {
           <div className="flex flex-col gap-4">
             <div className="flex items-center justify-between">
               <div>
-                <div className="text-sm font-medium text-[var(--text)]">Gemma Augmented</div>
-                <div className="text-xs text-[var(--text-muted)]">LLM Reranked ({stats.gemma_total_assignments} verified)</div>
+                <div className="text-sm font-medium text-[var(--text)]">Qwen Augmented</div>
+                <div className="text-xs text-[var(--text-muted)]">LLM Reranked ({stats.qwen_total_assignments} verified)</div>
               </div>
-              <div className="text-2xl font-bold text-[var(--teal)]">{stats.gemma_accuracy}%</div>
+              <div className="text-2xl font-bold text-[var(--teal)]">{stats.qwen_accuracy}%</div>
             </div>
             <div className="h-2 w-full bg-[var(--bg)] rounded-full overflow-hidden">
-              <div className="h-full bg-[var(--teal)] rounded-full" style={{ width: `${stats.gemma_accuracy}%` }} />
+              <div className="h-full bg-[var(--teal)] rounded-full" style={{ width: `${stats.qwen_accuracy}%` }} />
             </div>
             
             <div className="flex items-center justify-between mt-2">
@@ -275,15 +275,15 @@ const GemmaImpactPanel = ({ stats }: { stats: any }) => {
         <div>
           <h4 className="text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wider mb-3">Traffic Distribution</h4>
           <div className="flex items-end gap-2 mb-2">
-            <span className="text-3xl font-bold text-[var(--violet)]">{gemmaPct}%</span>
-            <span className="text-sm text-[var(--text-muted)] mb-1">of searches routed to Gemma</span>
+            <span className="text-3xl font-bold text-[var(--violet)]">{qwenPct}%</span>
+            <span className="text-sm text-[var(--text-muted)] mb-1">of searches routed to Qwen</span>
           </div>
           <div className="h-4 w-full flex rounded-full overflow-hidden mb-3">
-            <div className="h-full bg-[var(--violet)] transition-all" style={{ width: `${gemmaPct}%` }} title={`Gemma: ${stats.gemma_invocations}`} />
-            <div className="h-full bg-[var(--border-strong)] transition-all" style={{ width: `${100 - gemmaPct}%` }} title={`Vector: ${stats.vector_invocations}`} />
+            <div className="h-full bg-[var(--violet)] transition-all" style={{ width: `${qwenPct}%` }} title={`Qwen: ${stats.qwen_invocations}`} />
+            <div className="h-full bg-[var(--border-strong)] transition-all" style={{ width: `${100 - qwenPct}%` }} title={`Vector: ${stats.vector_invocations}`} />
           </div>
           <div className="flex justify-between text-xs text-[var(--text-secondary)]">
-            <div className="flex items-center gap-1"><div className="w-2 h-2 rounded-full bg-[var(--violet)]"></div> Gemma ({stats.gemma_invocations})</div>
+            <div className="flex items-center gap-1"><div className="w-2 h-2 rounded-full bg-[var(--violet)]"></div> Qwen ({stats.qwen_invocations})</div>
             <div className="flex items-center gap-1"><div className="w-2 h-2 rounded-full bg-[var(--border-strong)] border border-[var(--border)]"></div> Vector ({stats.vector_invocations})</div>
           </div>
         </div>
@@ -603,7 +603,7 @@ function PerformanceTab({ data, auditData }: { data: any, auditData: any }) {
 
   return (
     <div className="space-y-6">
-      <GemmaImpactPanel stats={data.gemma_stats} />
+      <QwenImpactPanel stats={data.qwen_stats} />
       
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
         <StatCard title="Avg latency" value={`${p.avg_latency_ms ?? 0}ms`} accentColor="var(--violet)" />

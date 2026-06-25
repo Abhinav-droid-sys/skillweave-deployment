@@ -2,7 +2,7 @@
 
 SkillWeave is an advanced, AI-powered semantic search and classification engine designed to seamlessly map messy, real-world, and multilingual job titles to standard **NCO 2015 (National Classification of Occupations)** codes. 
 
-By leveraging cutting-edge Vector Databases, fully local LLM-based reranking (Gemma via Ollama), and multilingual translation models, SkillWeave transforms how occupational data is standardized across India and beyond, entirely on your own hardware without relying on closed-source APIs.
+By leveraging cutting-edge Vector Databases, cloud-based LLM reranking (Qwen API), and multilingual translation models, SkillWeave transforms how occupational data is standardized across India and beyond, seamlessly integrating advanced AI intelligence into your workflow.
 
 ---
 
@@ -17,10 +17,10 @@ By leveraging cutting-edge Vector Databases, fully local LLM-based reranking (Ge
 - **CSV Uploads**: Upload massive datasets of unstandardized occupational strings.
 - **Optimized Concurrency**: Processes batches at blazing speeds using chunk-based dispatching on the frontend and highly optimized `ThreadPoolExecutor` parallelization on the FastAPI backend.
 
-### 3. Fully Local LLM Intelligence & Reranking (Gemma via Ollama)
-- **Data Privacy**: Runs 100% locally on your machine using Ollama. No data is sent to external APIs like OpenAI or Groq.
+### 3. Cloud LLM Intelligence & Reranking (Qwen API)
+- **High Performance**: Connects to scalable cloud LLM APIs to process data swiftly without requiring expensive local hardware.
 - **Query Normalization**: Cleans up typos, slang, and phonetic Hinglish (e.g., "kheti karne wala" → "farmer") before searching.
-- **Smart Reranking**: Uses local Gemma models to analyze the top vector search results and re-order them based on deep contextual understanding, providing human-level accuracy.
+- **Smart Reranking**: Uses cloud-hosted Qwen models to analyze the top vector search results and re-order them based on deep contextual understanding, providing human-level accuracy.
 
 ### 4. Interactive Analytics Dashboard
 - **Real-Time Metrics**: Visualizes system performance, search accuracy, and LLM vs. Baseline comparisons using beautiful Recharts.
@@ -42,7 +42,7 @@ By leveraging cutting-edge Vector Databases, fully local LLM-based reranking (Ge
 - Python & FastAPI
 - Qdrant (Vector Database)
 - FastEmbed (Local sentence-transformers)
-- Ollama (Local LLM runner for Gemma)
+- Cloud LLM API (Qwen)
 - Deep-Translator (Multilingual support)
 
 ---
@@ -61,13 +61,8 @@ git clone https://github.com/Abhinav-droid-sys/skillweave-deployment.git
 cd skillweave-final-project
 ```
 
-### 2. Setup Local LLM (Ollama)
-SkillWeave uses the Gemma model for high-accuracy semantic normalization and reranking. Once Ollama is installed, run the following in your terminal to download and start the model:
-
-```bash
-ollama run gemma2
-```
-*Leave the Ollama server running in the background. It will automatically bind to `http://localhost:11434`.*
+### 2. Setup Cloud LLM (Qwen API)
+SkillWeave uses the Qwen model for high-accuracy semantic normalization and reranking. You will need an API key from an OpenAI-compatible cloud provider (such as DashScope, Together AI, DeepInfra, etc.) that hosts the Qwen model.
 
 ### 3. Backend Setup
 The backend runs on FastAPI and requires Python dependencies.
@@ -89,11 +84,10 @@ pip install -r requirements.txt
 ```
 
 **Environment Variables:**
-Create a `.env` file in the `backend` directory. The defaults are already configured for Ollama, but you can explicitly specify the model:
+Create a `.env` file in the `backend` directory. Configure it to point to your chosen cloud API provider:
 ```env
-LLM_BASE_URL="http://localhost:11434/v1"
-LLM_API_KEY="ollama"
-LLM_MODEL="gemma2"
+OLLAMA_BASE_URL="http://localhost:11434/v1"
+LOCAL_MODEL_NAME="qwen3.6:35b"
 ```
 
 **Start the Backend Server:**
@@ -148,5 +142,5 @@ Once the backend is running, you can explore the interactive API documentation:
 1. **Access the App**: Open your browser and navigate to `http://localhost:3000`.
 2. **Search Manually**: Use the main dashboard to test single queries in any language.
 3. **Batch Process**: Navigate to the "Batch Coding" tab, upload a CSV containing a column of occupation texts, and watch the system classify them concurrently.
-4. **View Metrics**: Click the "Metrics" tab in the navigation bar to see real-time performance analytics, language distribution, and Gemma model impact charts.
+4. **View Metrics**: Click the "Metrics" tab in the navigation bar to see real-time performance analytics, language distribution, and Qwen model impact charts.
 5. **Change UI Language**: Use the dropdown widget in the top-right navigation bar to translate the entire application interface into your preferred language.

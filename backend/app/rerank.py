@@ -5,7 +5,7 @@ imperfectly and its scores are not calibrated relevance. This module re-reads th
 query against each retrieved candidate with the LLM and returns, per candidate:
 a 0-100 relevance score, a short reason, a cleaned title, and a one-line summary --
 all written in the requested response language. Reuses the same OpenAI-compatible
-endpoint as the normalizer (e.g. Groq). Fails soft: returns None on any error so
+endpoint as the normalizer (e.g. Qwen). Fails soft: returns None on any error so
 search still works with the original hybrid order.
 
 The NCO code and hierarchy are NEVER generated -- only the human-readable title,

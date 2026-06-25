@@ -273,8 +273,8 @@ def dashboard_stats(db: Session) -> dict:
         select(func.avg(SearchLog.top_confidence)).select_from(SearchLog)
     ).scalar()
 
-    # -- Gemma Model Metrics
-    gemma_invocations = db.execute(
+    # -- Qwen Model Metrics
+    qwen_invocations = db.execute(
         select(func.count()).select_from(SearchLog).where(SearchLog.reranked == True)
     ).scalar() or 0
     
@@ -282,18 +282,18 @@ def dashboard_stats(db: Session) -> dict:
         select(func.count()).select_from(SearchLog).where(SearchLog.reranked == False)
     ).scalar() or 0
 
-    gemma_matches = db.execute(
+    qwen_matches = db.execute(
         select(func.count()).select_from(Assignment).join(SearchLog, Assignment.search_log_id == SearchLog.id)
         .where(Assignment.overridden == False, SearchLog.reranked == True)
     ).scalar() or 0
     
-    gemma_overrides = db.execute(
+    qwen_overrides = db.execute(
         select(func.count()).select_from(Assignment).join(SearchLog, Assignment.search_log_id == SearchLog.id)
         .where(Assignment.overridden == True, SearchLog.reranked == True)
     ).scalar() or 0
 
-    gemma_total = gemma_matches + gemma_overrides
-    gemma_accuracy = round(gemma_matches / gemma_total * 100, 1) if gemma_total > 0 else 0
+    qwen_total = qwen_matches + qwen_overrides
+    qwen_accuracy = round(qwen_matches / qwen_total * 100, 1) if qwen_total > 0 else 0
 
     vector_matches = db.execute(
         select(func.count()).select_from(Assignment).join(SearchLog, Assignment.search_log_id == SearchLog.id)
@@ -355,12 +355,12 @@ def dashboard_stats(db: Session) -> dict:
                 "slow": slow_lat,
             }
         },
-        "gemma_stats": {
-            "gemma_invocations": gemma_invocations,
+        "qwen_stats": {
+            "qwen_invocations": qwen_invocations,
             "vector_invocations": vector_invocations,
-            "gemma_accuracy": gemma_accuracy,
+            "qwen_accuracy": qwen_accuracy,
             "vector_accuracy": vector_accuracy,
-            "gemma_total_assignments": gemma_total,
+            "qwen_total_assignments": qwen_total,
             "vector_total_assignments": vector_total
         }
     }

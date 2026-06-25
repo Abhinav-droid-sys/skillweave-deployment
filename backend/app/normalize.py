@@ -424,7 +424,7 @@ class QueryNormalizer:
             return NormalizedQuery(original, original, language, script,
                                    "passthrough", ["looks like an NCO code"])
 
-        # Tier 2: LLM Normalizer Priority (Groq / Gemma)
+        # Tier 2: LLM Normalizer Priority (Qwen)
         if self.llm and self.llm.enabled:
             llm_result = self.llm.normalize(original)
             if llm_result:

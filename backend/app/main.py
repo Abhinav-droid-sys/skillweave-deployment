@@ -65,16 +65,7 @@ async def lifespan(app: FastAPI):
         api_key=settings.qdrant_api_key,
         path=settings.qdrant_path,
     )
-    llm_client = LLMClient(
-        offline=settings.llm_offline,
-        model_path=settings.llm_model_path,
-        base_url=settings.llm_base_url,
-        api_key=settings.llm_api_key,
-        model=settings.llm_model,
-        fallback_base_url=settings.llm_fallback_base_url,
-        fallback_api_key=settings.llm_fallback_api_key,
-        fallback_model=settings.llm_fallback_model,
-    )
+    llm_client = LLMClient()
     state["llm_client"] = llm_client
     state["normalizer"] = QueryNormalizer(
         use_lexicon=settings.use_lexicon,
@@ -151,12 +142,12 @@ def normalize(req: SearchRequest) -> NormalizationInfo:
 
 @app.post("/transcribe")
 def transcribe(file: UploadFile = File(...), language: str | None = Form(None)) -> dict:
-    """Speech-to-text via an OpenAI-compatible Whisper endpoint (default: Groq)."""
+    """Speech-to-text via an OpenAI-compatible Whisper endpoint."""
     key = settings.stt_api_key or settings.llm_api_key
     if not (settings.stt_enabled and key):
         raise HTTPException(
             status_code=503,
-            detail="Voice is not configured. Set STT_API_KEY (or LLM_API_KEY) to a Groq key.",
+            detail="Voice is not configured. Set STT_API_KEY (or LLM_API_KEY) to a valid key.",
         )
 
     import httpx

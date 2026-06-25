@@ -1,7 +1,7 @@
 """Fallback suggestions: triggered when top confidence is below threshold.
 
 Strategy (layered, fails soft at every step):
-1. LLM query-refinement (if Groq is on) -- "what did you mean?"
+1. LLM query-refinement (if LLM is on) -- "what did you mean?"
 2. Hierarchy hint from top result -- "try searching in <division>"
 3. Rule-based agent suffixes -- "try: <query> worker / operator / specialist"
 

@@ -37,15 +37,9 @@ class Settings(BaseSettings):
     # Works with any OpenAI-compatible endpoint (OpenAI, Groq, Sarvam, Ollama, ...).
     # Leave LLM_NORMALIZE=false (or omit LLM_API_KEY) to use Tier 1 only.
     llm_normalize: bool = True
-    llm_offline: bool = False
-    llm_model_path: str | None = None
-    llm_base_url: str = "https://api.groq.com/openai/v1"
-    llm_api_key: str | None = None
-    llm_model: str = "llama-3.3-70b-versatile"
-    llm_fallback_base_url: str | None = "http://localhost:11434/v1"
-    llm_fallback_api_key: str | None = "ollama"
-    llm_fallback_model: str | None = "gemma2"
-    llm_timeout: float = 8.0
+    ollama_base_url: str = "http://localhost:11434/v1"
+    local_model_name: str = "qwen3.6:35b"
+    llm_timeout: float = 30.0
 
     # --- LLM reranking (reuses the LLM_* settings above) ---
     rerank: bool = True            # reorder + score results with the LLM (needs LLM configured)
