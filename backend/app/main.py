@@ -359,7 +359,7 @@ def search(req: SearchRequest, db: Session = Depends(get_db)) -> SearchResponse:
 
 
 @app.post("/search/batch", response_model=BatchSearchResponse)
-def search_batch(req: BatchSearchRequest, _: dict = Depends(require_auth_cookie)) -> BatchSearchResponse:
+def search_batch(req: BatchSearchRequest) -> BatchSearchResponse:
     embedder: Embedder = state["embedder"]
     store: VectorStore = state["store"]
     normalizer: QueryNormalizer = state["normalizer"]

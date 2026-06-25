@@ -304,8 +304,8 @@ export default function Dashboard() {
     setError(null);
     try {
       const [dashRes, auditRes] = await Promise.all([
-        fetch(`${API_BASE}/dashboard`, { credentials: "include" }),
-        fetch(`${API_BASE}/audit`, { credentials: "include" }),
+        fetch(`/api/dashboard`, { credentials: "include" }),
+        fetch(`/api/audit`, { credentials: "include" }),
       ]);
 
       if (!dashRes.ok) throw new Error(`Dashboard API error: ${dashRes.statusText}`);

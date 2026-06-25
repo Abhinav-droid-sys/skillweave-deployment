@@ -15,7 +15,7 @@ export default function Navbar({ onMenuClick }: NavbarProps) {
 
   const handleLogout = async () => {
     try {
-      await fetch(`${process.env.NEXT_PUBLIC_API_BASE || "http://localhost:8000"}/auth/web/logout`, {
+      await fetch(`/api/auth/web/logout`, {
         method: "POST",
         credentials: "include"
       });

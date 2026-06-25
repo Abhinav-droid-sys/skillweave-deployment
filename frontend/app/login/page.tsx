@@ -17,7 +17,7 @@ export default function Login() {
     setIsLoading(true);
 
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE || "http://localhost:8000"}/auth/web/login`, {
+      const res = await fetch(`/api/auth/web/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -25,13 +25,14 @@ export default function Login() {
       });
 
       if (!res.ok) {
-        throw new Error("Invalid username or password");
+        const errData = await res.json().catch(() => ({}));
+        throw new Error(errData.detail || "Invalid username or password");
       }
 
-      // On success, redirect to dashboard
-      router.push("/dashboard");
-      router.refresh();
+      // Force a full page reload to guarantee the browser sends the new cookie to Next.js middleware
+      window.location.href = "/dashboard";
     } catch (err: any) {
+      console.error("Login Error:", err);
       setError(err.message || "Failed to login");
     } finally {
       setIsLoading(false);

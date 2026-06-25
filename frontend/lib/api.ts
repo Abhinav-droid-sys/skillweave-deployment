@@ -1,7 +1,6 @@
 import type { SearchResponse, SearchResult } from "./types";
 
-const BASE =
-  process.env.NEXT_PUBLIC_API_BASE?.replace(/\/$/, "") || "http://localhost:8000";
+const BASE = "/api";
 
 export async function searchOccupations(
   query: string,
