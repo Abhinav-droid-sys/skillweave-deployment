@@ -39,12 +39,12 @@ class Settings(BaseSettings):
     llm_normalize: bool = True
     llm_offline: bool = False
     llm_model_path: str | None = None
-    llm_base_url: str = "https://api.groq.com/openai/v1"
+    llm_base_url: str = "https://openrouter.ai/api/v1"
     llm_api_key: str | None = None
-    llm_model: str = "llama-3.3-70b-versatile"
-    llm_fallback_base_url: str | None = "http://localhost:11434/v1"
-    llm_fallback_api_key: str | None = "ollama"
-    llm_fallback_model: str | None = "gemma2"
+    llm_model: str = "qwen/qwen-2.5-7b-instruct:free"
+    llm_fallback_base_url: str | None = None
+    llm_fallback_api_key: str | None = None
+    llm_fallback_model: str | None = None
     llm_timeout: float = 8.0
 
     # --- LLM reranking (reuses the LLM_* settings above) ---
